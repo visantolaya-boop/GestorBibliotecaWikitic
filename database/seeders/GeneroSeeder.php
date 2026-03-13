@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class UbicacionSeeder extends Seeder
+class GeneroSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,19 +14,19 @@ class UbicacionSeeder extends Seeder
     public function run()
     {
 
-        \App\Models\Ubicacion::create([
+        \App\Models\Genero::create([
             'user_id' => 1,
-            'nombre' => 'Salon'
+            'nombre' => 'Terror'
         ]);
 
-        \App\Models\Ubicacion::create([
+        \App\Models\Genero::create([
             'user_id' => 1,
-            'nombre' => 'Biblioteca'
+            'nombre' => 'Romance'
         ]);
 
-        \App\Models\Ubicacion::create([
+        \App\Models\Genero::create([
             'user_id' => 1,
-            'nombre' => 'Estudio'
+            'nombre' => 'Aventuras'
         ]);
     }
 }

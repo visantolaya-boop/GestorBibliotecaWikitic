@@ -48,7 +48,7 @@ const getStatusClass = (estado) => {
                                 </p>
                                 <p class="text-gray-700 font-medium">
                                     {{ reseña?.inicio_lectura || '—' }} <span class="text-gray-300 mx-1">/</span> {{
-                                    reseña?.final_lectura || '—' }}
+                                        reseña?.final_lectura || '—' }}
                                 </p>
                             </div>
 

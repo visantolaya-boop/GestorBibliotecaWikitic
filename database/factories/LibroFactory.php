@@ -20,9 +20,9 @@ class LibroFactory extends Factory
             'anio' => $this->faker->numberBetween(1900, now()->year),
             'editorial' => $this->faker->company(),
             'paginas' => $this->faker->numberBetween(80,1200),
-            'genero' => $this->faker->randomElement(['Fantasía','Ciencia ficción','Drama','Historia','Romance','Terror']),
+            'genero_id' => $this->faker->numberBetween(2,4),
             'portada' => null,
-            'ubicacion_id' => $this->faker->numberBetween(1,3)
+            'ubicacion_id' => $this->faker->numberBetween(2,4),
         ];
     }
 }

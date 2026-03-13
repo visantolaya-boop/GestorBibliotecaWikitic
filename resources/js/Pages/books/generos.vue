@@ -8,14 +8,14 @@ import { ref } from 'vue';
 
 
 const props = defineProps({
-    ubicaciones: Array
+    generos: Array
 })
 
-const ubicacionesFiltradas = computed(() => {
-    return Array.isArray(props.ubicaciones) ? props.ubicaciones.slice(1) : [];
+const generosFiltrados = computed(() => {
+    return Array.isArray(props.generos) ? props.generos.slice(1) : [];
 });
 
-const eliminarUbicacion = (id, nombre) => {
+const eliminarGenero = (id, nombre) => {
     Swal.fire({
         title: "¿Estás seguro?",
         text: `Vas a eliminar "${nombre}". Esta acción no se puede deshacer.`,
@@ -28,43 +28,42 @@ const eliminarUbicacion = (id, nombre) => {
         reverseButtons: true,
     }).then((result) => {
         if (result.isConfirmed) {
-            Inertia.delete(route("ubi.destroy", id), {
+            Inertia.delete(route("genero.destroy", id), {
                 onSuccess: () => {
-                    Swal.fire("¡Eliminado!", "La ubicación ha sido borrada.", "success");
+                    Swal.fire("¡Eliminado!", "El genero ha sido borrada.", "success");
                 },
                 onError: () => {
-                    Swal.fire("Error", "No se pudo eliminar la ubicación.", "error");
+                    Swal.fire("Error", "No se pudo eliminar el genero.", "error");
                 },
             });
         }
     });
 };
 
-const inputNombreUbicacion = ref(null);
+const inputNombreGenero = ref(null);
 
-const nuevaUbicacion = () => {
+const nuevoGenero = () => {
+
     showModal.value = true;
     nextTick(() => {
-        if (inputNombreUbicacion.value) {
-            inputNombreUbicacion.value.focus();
-        }
+        if (inputNombreGenero.value)
+            inputNombreGenero.value.focus();
     });
-}
-
+};
 
 
 const showModal = ref(false),
-    ubicacionForm = useForm({
+    generoForm = useForm({
         nombre: '',
     });
 
-const guardarUbicacion = () => {
-    ubicacionForm.post(route('ubi.store'),
+const guardarGenero = () => {
+    generoForm.post(route('genero.store'),
         {
 
             onSuccess: () => {
                 showModal.value = false;
-                ubicacionForm.reset();
+                generoForm.reset();
             }
         })
 }
@@ -72,12 +71,12 @@ const guardarUbicacion = () => {
 
 <template>
 
-    <Head title="Lista Ubicaciones" />
+    <Head title="Lista Generos" />
 
     <BreezeAuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Gestión de Ubicaciones
+                Gestión de Generos
             </h2>
         </template>
 
@@ -92,7 +91,7 @@ const guardarUbicacion = () => {
                                     <tr>
                                         <th scope="col"
                                             class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                            Nombre de la Ubicación
+                                            Nombre del Genero
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -101,7 +100,7 @@ const guardarUbicacion = () => {
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-100">
-                                    <!-- Añadir Ubicacion -->
+                                    <!-- Añadir Genero -->
                                     <tr class="hover:bg-gray-50 transition-colors">
 
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -111,13 +110,13 @@ const guardarUbicacion = () => {
 
                                                 </div>
                                                 <span class="ml-4 text-sm font-medium text-gray-900">
-                                                    Añadir Nueva Ubicación
+                                                    Añadir Nuevo Genero
                                                 </span>
                                             </div>
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button @click="nuevaUbicacion"
+                                            <button @click="nuevoGenero"
                                                 class="inline-flex items-center px-4 py-2 bg-green-50 text-green-700 hover:bg-green-600 hover:text-white rounded-xl transition-all duration-300 group shadow-sm">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -132,21 +131,20 @@ const guardarUbicacion = () => {
                                     <div v-if="showModal"
                                         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                                         <div class="bg-white p-6 rounded-lg shadow-xl w-96">
-                                            <h3 class="text-lg font-bold mb-4">Nueva Ubicación</h3>
+                                            <h3 class="text-lg font-bold mb-4">Nuevo Genero</h3>
 
-                                            <input v-model="ubicacionForm.nombre" ref="inputNombreUbicacion" type="text"
-                                                placeholder="Nombre de la ubicacion..." class="w-full border p-2 mb-4"
-                                                @input="ubicacionForm.clearErrors('nombre')" />
+                                            <input v-model="generoForm.nombre" ref="inputNombreGenero" type="text"
+                                                placeholder="Nombre del genero..." class="w-full border p-2 mb-4"
+                                                @input="generoForm.clearErrors('nombre')" />
 
-                                            <p v-if="ubicacionForm.errors.nombre"
-                                                class="text-red-500 text-xs mt-1 italic">
-                                                {{ ubicacionForm.errors.nombre }}
+                                            <p v-if="generoForm.errors.nombre" class="text-red-500 text-xs mt-1 italic">
+                                                {{ generoForm.errors.nombre }}
                                             </p>
 
                                             <div class="flex justify-end gap-2">
                                                 <button type="button" @click="showModal = false">Cancelar</button>
-                                                <button type="button" @click="guardarUbicacion"
-                                                    :disabled="ubicacionForm.processing"
+                                                <button type="button" @click="guardarGenero"
+                                                    :disabled="generoForm.processing"
                                                     class="bg-blue-600 text-white px-4 py-2 rounded">
                                                     Guardar
                                                 </button>
@@ -155,7 +153,7 @@ const guardarUbicacion = () => {
                                     </div>
                                     <!--  -->
                                     <!-- Gestion + Eliminar -->
-                                    <tr v-for="ubicacion in ubicacionesFiltradas" :key="ubicacion.id"
+                                    <tr v-for="genero in generosFiltrados" :key="genero.id"
                                         class="hover:bg-gray-50 transition-colors">
 
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -165,13 +163,13 @@ const guardarUbicacion = () => {
 
                                                 </div>
                                                 <span class="ml-4 text-sm font-medium text-gray-900">
-                                                    {{ ubicacion.nombre }}
+                                                    {{ genero.nombre }}
                                                 </span>
                                             </div>
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button @click="eliminarUbicacion(ubicacion.id, ubicacion.nombre)"
+                                            <button @click="eliminarGenero(genero.id, genero.nombre)"
                                                 class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition-all duration-200 group">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5"
                                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -184,9 +182,9 @@ const guardarUbicacion = () => {
                                         </td>
                                     </tr>
 
-                                    <tr v-if="ubicacionesFiltradas.length === 0">
+                                    <tr v-if="generosFiltrados.length === 0">
                                         <td colspan="2" class="px-6 py-10 text-center text-gray-400 italic text-sm">
-                                            No hay ubicaciones registradas para mostrar.
+                                            No hay generos registrados para mostrar.
                                         </td>
                                     </tr>
                                 </tbody>

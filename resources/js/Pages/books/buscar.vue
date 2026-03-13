@@ -3,9 +3,8 @@ import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
 import { Head, useForm, usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import NavLink from "@/Components/NavLink.vue";
-import Label from "@/Components/Label.vue";
 import Input from "@/Components/Input.vue";
-import { computed, ref, watch } from "vue";
+import { nextTick, ref, watch } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Swal from "sweetalert2";
 import StarIcon from "@/Components/StarIcon.vue";
@@ -20,40 +19,39 @@ const props = defineProps({
         type: Array,
         default: () => ([]),
     },
+    generos: {
+        type: Array,
+        default: () => ([]),
+    },
 });
 
 let search = ref(props.filters?.search || ""),
-    pageNumber = ref(1),
     filterEstado = ref(''),
     filterPuntuacion = ref(''),
-    filterUbicacion = ref('');
-
-let librosUrl = computed(() => {
-    let url = new URL(route("books.buscar"));
-
-    url.searchParams.append("page", pageNumber.value);
-
-    if (search.value) {
-        url.searchParams.append("search", search.value);
-    }
-
-    return url;
-});
+    filterUbicacion = ref(''),
+    filterGenero = ref('');
 
 watch(
-    [search, filterEstado, filterPuntuacion,filterUbicacion],
-    ([s, e, p, u]) => {
+    [search, filterEstado, filterPuntuacion, filterUbicacion, filterGenero],
+    ([s, e, p, u, g], [oldS, oldE, oldP, oldU, oldG]) => {
+
+        if (u === 'nueva') {
+            filterUbicacion.value = oldU;
+            return;
+        }
+
+        if (g === 'nuevo') {
+            filterGenero.value = oldG;
+            return;
+        }
+
         Inertia.get(
             route("books.buscar"),
-            { search: s, estado: e, puntuacion: p, ubicacion: u },
-            {
-                preserveState: true,
-                replace: true,
-                preserveScroll: true,
-            },
+            { search: s, estado: e, puntuacion: p, ubicacion: u, genero: g },
+            { preserveState: true, replace: true, preserveScroll: true }
         );
     },
-    { deep: true },
+    { deep: true }
 );
 
 
@@ -61,7 +59,13 @@ const resetFiltros = () => {
     search.value = "";
     filterEstado.value = "";
     filterPuntuacion.value = "";
-    filterUbicacion.value="";
+    filterUbicacion.value = "";
+    filterGenero.value = "";
+
+    Inertia.get(route("books.buscar")), {}, {
+        preserveState: true,
+        replace: true,
+    }
 }
 const eliminarLibro = (id, titulo) => {
     Swal.fire({
@@ -96,23 +100,58 @@ const eliminarLibro = (id, titulo) => {
     });
 };
 
+const inputNombreUbicacion = ref(null);
+
 const nuevaUbicacion = (event) => {
     if (event.target.value === 'nueva') {
         showModal.value = true;
-        form.ubicacion_id = null;    }
+        nextTick(() => {
+            if (inputNombreUbicacion.value) {
+                inputNombreUbicacion.value.focus();
+            }
+        });
+    }
+}
+
+const inputNombreGenero = ref(null);
+
+const nuevoGenero = (event) => {
+    if (event.target.value === 'nuevo') {
+        showModal2.value = true;
+        nextTick(() => {
+            if (inputNombreGenero.value)
+                inputNombreGenero.value.focus();
+        });
+    }
 }
 
 const showModal = ref(false),
     ubicacionForm = useForm({
         nombre: '',
     });
+
+const showModal2 = ref(false),
+    generoForm = useForm({
+        nombre: '',
+    });
+
 const guardarUbicacion = () => {
     ubicacionForm.post(route('ubi.store'),
         {
-            
+
             onSuccess: () => {
                 showModal.value = false;
                 ubicacionForm.reset();
+            }
+        })
+}
+
+const guardarGenero = () => {
+    generoForm.post(route('genero.store'),
+        {
+            onSuccess: () => {
+                showModal2.value = false;
+                generoForm.reset();
             }
         })
 }
@@ -151,7 +190,6 @@ const guardarUbicacion = () => {
                                         <Input v-model="search" placeholder="Buscar por título, autor..."
                                             class="block w-full pl-10 pr-4 py-2.5 bg-gray-50 border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 rounded-xl transition-all outline-none text-sm" />
                                     </div>
-
                                     <NavLink :href="route('books.create')"
                                         class="w-full lg:w-auto inline-flex justify-center items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-md shadow-green-100 active:scale-95 text-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
@@ -167,7 +205,8 @@ const guardarUbicacion = () => {
                                     <span class="text-xs font-bold uppercase text-gray-400 tracking-widest mr-2">Filtrar
                                         por:</span>
 
-                                    <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-2 focus-within:ring-blue-100">
+                                    <div
+                                        class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-2 focus-within:ring-blue-100">
                                         <select v-model="filterEstado"
                                             class="bg-transparent border-none focus:ring-0 text-sm py-2 pr-8 cursor-pointer">
                                             <option value="">Estado</option>
@@ -197,37 +236,82 @@ const guardarUbicacion = () => {
                                         class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-2 focus-within:ring-blue-100">
                                         <select v-model="filterUbicacion"
                                             class="bg-transparent border-none focus:ring-0 text-sm py-2 pr-8 cursor-pointer"
-                                            @change="nuevaUbicacion"
-                                            >
+                                            @change="nuevaUbicacion">
                                             <option value="">Ubicación</option>
                                             <option v-for="u in props.ubicaciones" :key="u.id" :value="u.nombre">
                                                 {{ u.nombre }}
                                             </option>
                                             <option value="nueva">
-                                            Añadir nueva ubicación
+                                                Añadir nueva ubicación
                                             </option>
                                         </select>
                                     </div>
-                                    <!--  -->
-                                    <div v-if="showModal"
-                                class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                                <div class="bg-white p-6 rounded-lg shadow-xl w-96">
-                                    <h3 class="text-lg font-bold mb-4">Nueva Ubicación</h3>
-
-                                    <input v-model="ubicacionForm.nombre" type="text"
-                                        placeholder="Nombre de la estantería..." class="w-full border p-2 mb-4" />
-
-                                    <div class="flex justify-end gap-2">
-                                        <button type="button" @click="showModal = false">Cancelar</button>
-                                        <button type="button" @click="guardarUbicacion"
-                                            :disabled="ubicacionForm.processing"
-                                            class="bg-blue-600 text-white px-4 py-2 rounded">
-                                            Guardar
-                                        </button>
+                                    <div
+                                        class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-2 focus-within:ring-blue-100">
+                                        <select v-model="filterGenero"
+                                            class="bg-transparent border-none focus:ring-0 text-sm py-2 pr-8 cursor-pointer"
+                                            @change="nuevoGenero">
+                                            <option value="">Genero</option>
+                                            <option v-for="g in props.generos" :key="g.id" :value="g.nombre">
+                                                {{ g.nombre }}
+                                            </option>
+                                            <option value="nuevo">
+                                                Añadir nuevo genero
+                                            </option>
+                                        </select>
                                     </div>
-                                </div>
-                            </div>
-                                    <!--  -->
+                                    <!-- Ubicacion Model -->
+                                    <div v-if="showModal"
+                                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                                        <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+                                            <h3 class="text-lg font-bold mb-4">Nueva Ubicación</h3>
+
+                                            <input v-model="ubicacionForm.nombre" ref="inputNombreUbicacion" type="text"
+                                                placeholder="Nombre de la ubicacion..." class="w-full border p-2 mb-4"
+                                                @input="ubicacionForm.clearErrors('nombre')" />
+
+                                            <p v-if="ubicacionForm.errors.nombre"
+                                                class="text-red-500 text-xs mt-1 italic">
+                                                {{ ubicacionForm.errors.nombre }}
+                                            </p>
+
+
+                                            <div class="flex justify-end gap-2">
+                                                <button type="button" @click="showModal = false">Cancelar</button>
+                                                <button type="button" @click="guardarUbicacion"
+                                                    :disabled="ubicacionForm.processing"
+                                                    class="bg-blue-600 text-white px-4 py-2 rounded">
+                                                    Guardar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Genero Model  -->
+                                    <div v-if="showModal2"
+                                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                                        <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+                                            <h3 class="text-lg font-bold mb-4">Nuevo Genero</h3>
+
+                                            <input v-model="generoForm.nombre" ref="inputNombreGenero" type="text"
+                                                placeholder="Nombre del genero..." class="w-full border p-2 mb-4" 
+                                                @input="generoForm.clearErrors('nombre')" />
+                                                
+                                            <p v-if="generoForm.errors.nombre"
+                                                class="text-red-500 text-xs mt-1 italic">
+                                                {{ generoForm.errors.nombre }}
+                                            </p>
+
+                                            <div class="flex justify-end gap-2">
+                                                <button type="button" @click="showModal2 = false">Cancelar</button>
+                                                <button type="button" @click="guardarGenero"
+                                                    :disabled="generoForm.processing"
+                                                    class="bg-blue-600 text-white px-4 py-2 rounded">
+                                                    Guardar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!---->
                                     <button @click="resetFiltros" type="button"
                                         class="text-xs font-semibold text-blue-600 hover:text-blue-800 underline transition">
                                         Limpiar filtros
@@ -264,7 +348,7 @@ const guardarUbicacion = () => {
                                     </div>
                                     <div class="text-sm text-gray-600">
                                         <strong>Género:</strong>
-                                        {{ libro.genero }}
+                                        {{ libro.genero.nombre }}
                                     </div>
                                     <div class="text-sm text-gray-600">
                                         <strong>Año:</strong> {{ libro.anio }}

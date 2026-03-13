@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Genero;
 use App\Models\User;
 use App\Models\Ubicacion;
 
@@ -19,6 +20,12 @@ class UserObserver
         'nombre' => 'Sin Asignar',
         'user_id' => $user->id,
     ]);
+
+    \App\Models\Genero::create([
+        'nombre' => 'Sin Asignar',
+        'user_id' => $user->id,
+    ]);
+        
     }
 
     /**

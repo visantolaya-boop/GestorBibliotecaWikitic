@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Genero;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        $this->call(GeneroSeeder::class);
         $this->call(UbicacionSeeder::class);
         $this->call(LecturaSeeder::class);
     }

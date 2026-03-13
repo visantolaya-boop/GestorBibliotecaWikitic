@@ -14,6 +14,6 @@ class LecturaSeeder extends Seeder
      */
     public function run()
     {
-        Lectura::factory(20)->create();
+        Lectura::factory(30)->create();
     }
 }

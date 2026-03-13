@@ -15,6 +15,6 @@ class LibroSeeder extends Seeder
      */
     public function run()
     {
-        Libro::factory(20)->create();
+        Libro::factory(30)->create();
     }
 }

@@ -20,4 +20,9 @@ class Libro extends Model
     {
         return $this->belongsTo(Ubicacion::class, 'ubicacion_id');
     }
+
+    public function genero(): BelongsTo
+    {
+        return $this->belongsTo(Genero::class, 'genero_id');
+    }
 }

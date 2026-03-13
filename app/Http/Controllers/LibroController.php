@@ -6,6 +6,7 @@ use Inertia\Inertia;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Genero;
 use App\Models\Lectura;
 use App\Models\Libro;
 use App\Models\Ubicacion;
@@ -14,16 +15,6 @@ use Illuminate\Support\Facades\Storage;
 
 class LibroController extends Controller
 {
-    public function index()
-    {
-        $libros = Libro::whereHas('ubicacion', function ($q) {
-            $q->where('user_id', auth()->id());
-        });
-
-        return Inertia::render('books/libros', [
-            'libros' => $libros
-        ]);
-    }
 
     public function buscar(Request $request)
     {
@@ -35,14 +26,18 @@ class LibroController extends Controller
         $this->realizarBusqueda($libroQuery, $request);
         $libroQuery->with('lecturas');
         $libroQuery->with('ubicacion');
+        $libroQuery->with('genero');
+
         $this->filtrosBusqueda($libroQuery, $request);
         // Ejecutamos la paginación
         $libros = $libroQuery->paginate(10)->appends(request()->query());
         $ubicaciones = Ubicacion::where('user_id', auth()->id())->get();
+        $generos = Genero::where('user_id', auth()->id())->get();
 
         return Inertia::render('books/buscar', [
             'libros'  => $libros,
             'ubicaciones' => $ubicaciones,
+            'generos' => $generos,
         ]);
     }
 
@@ -53,7 +48,6 @@ class LibroController extends Controller
                 $q->where('titulo', 'like', "%{$search}%")
                     ->orWhere('autor', 'like', "%{$search}%")
                     ->orWhere('editorial', 'like', "%{$search}%")
-                    ->orWhere('genero', 'like', "%{$search}%")
                     ->orWhere('anio', 'like', "%{$search}%");
             });
         });
@@ -79,6 +73,12 @@ class LibroController extends Controller
                 $q->where('nombre', 'like', $search);
             });
         });
+
+        $query->when($request->genero, function ($subq, $search) {
+            $subq->whereHas('genero', function ($q) use ($search) {
+                $q->where('nombre', 'like', $search);
+            });
+        });
     }
 
     public function editar($id)
@@ -87,9 +87,12 @@ class LibroController extends Controller
             $q->where('user_id', auth()->id());
         })->findOrFail($id);
         $ubicaciones = Ubicacion::where('user_id', auth()->id())->get();
+        $generos = Genero::where('user_id', auth()->id())->get();
+
         return Inertia::render('books/form/libroFormulario', [
             'libro' => $libro,
             'ubicaciones' => $ubicaciones,
+            'generos' => $generos,
             'isUpdating' => true
         ]);
     }
@@ -106,7 +109,7 @@ class LibroController extends Controller
             'anio'   => 'required|integer|digits:4',
             'editorial' => 'string|required',
             'paginas' => 'integer|required',
-            'genero' => 'string|required',
+            'genero_id' => 'required',
             'ubicacion_id' => 'required',
             'portada' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
@@ -143,7 +146,7 @@ class LibroController extends Controller
     public function create()
     {
         $ubicaciones = Ubicacion::where('user_id', auth()->id())->get();
-
+        $generos = Genero::where('user_id', auth()-> id())-> get();
         return Inertia::render('books/form/libroFormulario', [
             'libro' => [
                 'titulo' => '',
@@ -151,12 +154,13 @@ class LibroController extends Controller
                 'anio' => '',
                 'editorial' => '',
                 'paginas' => '',
-                'genero' => '',
+                'genero_id' => null,
                 'ubicacion_id' => null,
                 'portada' => null,
 
 
             ],
+            'generos' => $generos,
             'ubicaciones' => $ubicaciones,
             'isUpdating' => false
         ]);
@@ -170,7 +174,7 @@ class LibroController extends Controller
             'anio'      => 'required|integer|digits:4',
             'editorial' => 'required|string',
             'paginas'   => 'required|integer',
-            'genero'    => 'required|string',
+            'genero_id'    => 'required',
             'ubicacion_id' => 'required',
             'portada'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);

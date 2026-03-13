@@ -20,7 +20,7 @@ class CreateLibrosTable extends Migration
             $table->smallInteger('anio')->index();
             $table->string('editorial')->index();
             $table->integer('paginas');
-            $table->string('genero')->index();
+            $table->foreignId('genero_id')->nullable()->deafult(1)->constrained('ubicacion')->onDelete('set null');
             $table->string('portada')->nullable();
             $table->foreignId('ubicacion_id')->nullable()->deafult(1)->constrained('ubicacion')->onDelete('set null');
 
@@ -39,6 +39,8 @@ class CreateLibrosTable extends Migration
         Schema::table('libros', function (Blueprint $table) {
         $table->dropForeign(['ubicacion_id']);
         $table->dropColumn('ubicacion_id');
+        $table->dropForeign(['genero_id']);
+        $table->dropColumn('genero_id');
         });
         
         Schema::dropIfExists('libros');
