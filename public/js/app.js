@@ -23656,6 +23656,9 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
       get Head() {
         return _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_1__.Head;
       },
+      get Link() {
+        return _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_1__.Link;
+      },
       get useForm() {
         return _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_1__.useForm;
       },
@@ -24317,6 +24320,9 @@ __webpack_require__.r(__webpack_exports__);
       BreezeAuthenticatedLayout: _Layouts_Authenticated_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
       get Head() {
         return _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_1__.Head;
+      },
+      get Link() {
+        return _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_1__.Link;
       },
       NavLink: _Components_NavLink_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
       StarIcon: _Components_StarIcon_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
@@ -25777,9 +25783,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }),
         placeholder: "Título, autor...",
         "class": "block w-full pl-10 pr-4 py-2.5 bg-gray-50 border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 rounded-xl transition-all text-sm"
-      }, null, 8 /* PROPS */, ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["NavLink"], {
+      }, null, 8 /* PROPS */, ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Link"], {
         href: _ctx.route('books.create'),
-        "class": "w-full md:w-auto inline-flex justify-center items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-md active:scale-95 text-sm"
+        "class": "w-full md:w-auto inline-flex justify-center items-center px-6 pt-2 gap-2 bg-green-600 text-white py-1.5 rounded-xl font-bold shadow-md text-sm"
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return _toConsumableArray(_cache[12] || (_cache[12] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("svg", {
@@ -27027,9 +27033,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["BreezeAuthenticatedLayout"], null, {
     header: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       var _$props$reseña, _$props$reseña2;
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_2, [_cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Reseña: ", -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(((_$props$reseña = $props.reseña) === null || _$props$reseña === void 0 || (_$props$reseña = _$props$reseña.libros) === null || _$props$reseña === void 0 ? void 0 : _$props$reseña.titulo) || 'Sin título'), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["NavLink"], {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_2, [_cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Reseña: ", -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(((_$props$reseña = $props.reseña) === null || _$props$reseña === void 0 || (_$props$reseña = _$props$reseña.libros) === null || _$props$reseña === void 0 ? void 0 : _$props$reseña.titulo) || 'Sin título'), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Link"], {
         href: _ctx.route('reseñas.editar', (_$props$reseña2 = $props.reseña) === null || _$props$reseña2 === void 0 ? void 0 : _$props$reseña2.id),
-        "class": "w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl shadow-md transition active:scale-95 text-sm font-bold"
+        "class": "w-full sm:w-auto text-center bg-blue-600 text-white px-6 py-2.5 rounded-xl shadow-md text-sm font-bold"
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return _toConsumableArray(_cache[1] || (_cache[1] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Editar Reseña ", -1 /* CACHED */)]));

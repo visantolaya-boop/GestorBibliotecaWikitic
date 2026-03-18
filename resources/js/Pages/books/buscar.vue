@@ -1,8 +1,9 @@
 <script setup>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
-import { Head, useForm, usePage } from "@inertiajs/inertia-vue3";
+import { Head, Link, useForm, usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import NavLink from "@/Components/NavLink.vue";
+
 import Input from "@/Components/Input.vue";
 import { nextTick, ref, watch } from "vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -190,15 +191,15 @@ const guardarGenero = () => {
                                         <Input v-model="search" placeholder="Título, autor..."
                                             class="block w-full pl-10 pr-4 py-2.5 bg-gray-50 border-transparent focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 rounded-xl transition-all text-sm" />
                                     </div>
-                                    <NavLink :href="route('books.create')"
-                                        class="w-full md:w-auto inline-flex justify-center items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-md active:scale-95 text-sm">
+                                    <Link :href="route('books.create')"
+                                        class="w-full md:w-auto inline-flex justify-center items-center px-6 pt-2 gap-2 bg-green-600  text-white  py-1.5 rounded-xl font-bold shadow-md text-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 4v16m8-8H4" />
                                         </svg>
                                         <span>Nuevo Libro</span>
-                                    </NavLink>
+                                    </Link>
                                 </div>
 
                                 <div class="pt-4 border-t border-gray-50">

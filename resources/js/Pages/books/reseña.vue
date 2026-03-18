@@ -1,6 +1,6 @@
 <script setup>
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-import { Head } from '@inertiajs/inertia-vue3';
+import { Head, Link } from '@inertiajs/inertia-vue3';
 import NavLink from '@/Components/NavLink.vue'; // Asegúrate de que la extensión sea correcta
 import StarIcon from '@/Components/StarIcon.vue';
 
@@ -30,10 +30,10 @@ const getStatusClass = (estado) => {
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     Reseña: <span class="text-blue-600 block sm:inline">{{ reseña?.libros?.titulo || 'Sin título' }}</span>
                 </h2>
-                <NavLink :href="route('reseñas.editar', reseña?.id)"
-                    class="w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl shadow-md transition active:scale-95 text-sm font-bold">
+                <Link :href="route('reseñas.editar', reseña?.id)"
+                    class="w-full sm:w-auto text-center bg-blue-600  text-white px-6 py-2.5 rounded-xl shadow-md text-sm font-bold">
                     Editar Reseña
-                </NavLink>
+                </Link>
             </div>
         </template>
 
