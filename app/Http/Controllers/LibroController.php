@@ -19,21 +19,20 @@ class LibroController extends Controller
 
     public function buscar(Request $request)
     {
-        $libroQuery = Libro::whereHas('ubicacion', function ($q) {
-            $q->where('user_id', auth()->id());
-        });
+
+        $libroQuery = Libro::query();
+
+        $libroQuery->with(['lecturas', 'ubicacion', 'genero']);
 
 
         $this->realizarBusqueda($libroQuery, $request);
-        $libroQuery->with('lecturas');
-        $libroQuery->with('ubicacion');
-        $libroQuery->with('genero');
+
 
         $this->filtrosBusqueda($libroQuery, $request);
         // Ejecutamos la paginación
         $libros = $libroQuery->paginate(10)->appends(request()->query());
-        $ubicaciones = Ubicacion::where('user_id', auth()->id())->get();
-        $generos = Genero::where('user_id', auth()->id())->get();
+        $ubicaciones = Ubicacion::all();
+        $generos = Genero::all();
 
         return Inertia::render('books/buscar', [
             'libros'  => $libros,
@@ -84,11 +83,9 @@ class LibroController extends Controller
 
     public function editar($id)
     {
-        $libro = Libro::whereHas('ubicacion', function ($q) {
-            $q->where('user_id', auth()->id());
-        })->findOrFail($id);
-        $ubicaciones = Ubicacion::where('user_id', auth()->id())->get();
-        $generos = Genero::where('user_id', auth()->id())->get();
+        $libro = Libro::findOrFail($id);
+        $ubicaciones = Ubicacion::all();
+        $generos = Genero::all();
 
         return Inertia::render('books/form/libroFormulario', [
             'libro' => $libro,
@@ -100,9 +97,8 @@ class LibroController extends Controller
 
     public function update(StoreLibroRequest $request, $id)
     {
-        $libro = Libro::whereHas('ubicacion', function ($q) {
-            $q->where('user_id', auth()->id());
-        })->findOrFail($id);
+        $libro = Libro::findOrFail($id);
+
 
         $datos = $request->validated();
 
@@ -125,9 +121,8 @@ class LibroController extends Controller
 
     public function destroy($id)
     {
-        $libro = Libro::whereHas('ubicacion', function ($q) {
-            $q->where('user_id', auth()->id());
-        })->findOrFail($id);
+        $libro = Libro::findOrFail($id);
+        
 
         $libro->delete();
 
@@ -138,7 +133,7 @@ class LibroController extends Controller
     public function create()
     {
         $ubicaciones = Ubicacion::where('user_id', auth()->id())->get();
-        $generos = Genero::where('user_id', auth()-> id())-> get();
+        $generos = Genero::where('user_id', auth()->id())->get();
         return Inertia::render('books/form/libroFormulario', [
             'libro' => [
                 'titulo' => '',

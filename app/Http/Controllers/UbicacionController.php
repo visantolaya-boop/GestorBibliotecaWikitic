@@ -14,8 +14,8 @@ class UbicacionController extends Controller
 {
     public function destroy($id)
     {
-        $ubicacion = Ubicacion::where('user_id', auth()->id())
-            ->findOrFail($id);
+        $ubicacion = Ubicacion::query();
+        $ubicacion->findOrFail($id);
 
         $this->transpasosLibros($id);
 
@@ -59,7 +59,7 @@ class UbicacionController extends Controller
 
     public function index()
     {
-        $ubicaciones = Ubicacion::all()->where('user_id', auth()->id())->values();
+        $ubicaciones = Ubicacion::all()->values();
 
         return Inertia::render('books/ubicaciones', [
             'ubicaciones' => $ubicaciones

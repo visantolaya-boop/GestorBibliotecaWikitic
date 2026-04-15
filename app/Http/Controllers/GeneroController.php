@@ -14,8 +14,8 @@ class GeneroController extends Controller
    {
     public function destroy($id)
     {
-        $genero = Genero::where('user_id', auth()->id())
-            ->findOrFail($id);
+        $genero = Genero::query();
+        $genero->findOrFail($id);
 
         $this->transpasosGeneros($id);
 
@@ -59,7 +59,7 @@ class GeneroController extends Controller
 
     public function index()
     {
-        $generos = Genero::all()->where('user_id', auth()->id())->values();
+        $generos = Genero::all()->values();
 
         return Inertia::render('books/generos', [
             'generos' => $generos
